@@ -10,32 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout ML Backend (Repo B)
       - name: Checkout ML Backend (Repo B)
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
           pip install -r requirements.txt || true
 
+      # 4️⃣ Run AQI map generation script
       - name: Run AQI map generation script
         run: |
           python runme.py
 
+      # 5️⃣ Push generated static maps to Frontend Repo (Repo A)
       - name: Push static map to Frontend Repo (Repo A)
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git clone https://$GH_TOKEN@github.com/adityaB-code100/Hyperlocal-AQI-API-Gateway.git
-          rm -f AQI-Frontend-API-Gateway/static/map*.html
-          cp -r static/* AQI-Frontend-API-Gateway/static/
-          cd AQI-Frontend-API-Gateway
+
+          rm -f Hyperlocal-AQI-API-Gateway/static/map*.html
+          cp -r static/* Hyperlocal-AQI-API-Gateway/static/
+
+          cd Hyperlocal-AQI-API-Gateway
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+
           git add static/
           git commit -m "Auto-update AQI static map (daily)" || echo "No changes to commit"
           git push
