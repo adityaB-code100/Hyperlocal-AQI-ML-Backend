@@ -1,0 +1,38 @@
+name: AQI ML Backend Automation
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  run-aqi-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        
+    - name: Set up environment variables
+      run: |
+        echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+      shell: bash
+      
+    - name: Create config.json from environment
+      run: |
+        echo '{"MONGO_URI": "'"$MONGO_URI"'"}' > config.json
+      shell: bash
+      
+    - name: Run runme.py
+      run: |
+        python runme.py
+      shell: bash
