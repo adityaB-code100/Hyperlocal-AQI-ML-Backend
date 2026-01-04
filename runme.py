@@ -8,5 +8,5 @@ def get_current_date():
 
 
 date=get_current_date()
-#index(date)
+index(date)
 index2(date)
