@@ -5,3 +5,4 @@ dnspython>=2.1.0
 folium>=0.14.0
 geopandas>=0.13.0
 geopy>=2.3.0
+plotly>=5.15.0
