@@ -30,7 +30,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git clone https://$GH_TOKEN@github.com/adityaB-code100/AQI-Frontend-API-Gateway.git
+          git clone https://$GH_TOKEN@github.com/adityaB-code100/Hyperlocal-AQI-API-Gateway.git
           rm -f AQI-Frontend-API-Gateway/static/map*.html
           cp -r static/* AQI-Frontend-API-Gateway/static/
           cd AQI-Frontend-API-Gateway
