@@ -12,4 +12,4 @@ def next_seven_days(start_date_str):
         raise ValueError("Date format must be YYYY-MM-DD or DD-MM-YYYY")
 
     # Always return in DD-MM-YYYY format
-    return [(start_date + timedelta(days=i)).strftime("%d-%m-%Y") for i in range(7)]
+    return [(start_date + timedelta(days=i)).strftime("%d-%m-%Y") for i in range(10)]

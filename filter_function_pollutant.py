@@ -70,7 +70,3 @@ def classify_pollutants(data):
 
     return results
 
-
-# # # Example usage
-# # pollutants = {"PM2.5": 75, "PM10": 160, "NO2": 60, "SO2": 10, "O3": 120, "CO": 0.8, "NH3": 380}
-# # print(classify_pollutants(pollutants))
