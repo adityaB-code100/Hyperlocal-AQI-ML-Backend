@@ -1,0 +1,40 @@
+name: Daily AQI Map Generator
+
+on:
+  schedule:
+    - cron: '30 21 * * *'   # 3:00 AM IST (UTC 21:30)
+  workflow_dispatch:
+
+jobs:
+  generate-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ML Backend (Repo B)
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt || true
+
+      - name: Run AQI map generation script
+        run: |
+          python runme.py
+
+      - name: Push static map to Frontend Repo (Repo A)
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git clone https://$GH_TOKEN@github.com/adityaB-code100/AQI-Frontend-API-Gateway.git
+          cp -r static/* AQI-Frontend-API-Gateway/static/
+          cd AQI-Frontend-API-Gateway
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add static/
+          git commit -m "Auto-update AQI static map (daily)" || echo "No changes to commit"
+          git push
