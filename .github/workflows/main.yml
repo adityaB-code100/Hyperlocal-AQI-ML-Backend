@@ -31,7 +31,7 @@ jobs:
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
-          python runme.py
+          python -m scripts.run_pipeline
 
       # 5️⃣ Push generated static maps to Frontend Repo
       - name: Push static map to Frontend Repo
