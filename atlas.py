@@ -1,7 +1,13 @@
-import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_mongo_uri():
-    """Reads MongoDB URI from config.json and returns it"""
-    with open("config.json") as f:
-        config = json.load(f)
-    return config["MONGO_URI"]
+    """Read MongoDB URI from .env"""
+    uri = os.getenv("MONGO_URI")
+
+    if not uri:
+        raise ValueError("MONGO_URI not found in .env file")
+
+    return uri
