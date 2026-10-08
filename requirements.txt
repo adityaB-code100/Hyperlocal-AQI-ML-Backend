@@ -13,3 +13,4 @@ geopy>=2.3.0
 
 plotly>=5.15.0
 Flask>=2.3.0
+python-dotenv
