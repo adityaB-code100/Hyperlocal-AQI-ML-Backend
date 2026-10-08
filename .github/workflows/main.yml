@@ -41,7 +41,9 @@ jobs:
           git clone https://$GH_TOKEN@github.com/adityaB-code100/Hyperlocal-AQI-API-Gateway.git
 
           rm -f Hyperlocal-AQI-API-Gateway/static/map*.html
-          cp -r static/* Hyperlocal-AQI-API-Gateway/static/
+
+          cp generated/maps/map*.html \
+             Hyperlocal-AQI-API-Gateway/static/
 
           cd Hyperlocal-AQI-API-Gateway
 
