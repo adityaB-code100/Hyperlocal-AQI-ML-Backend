@@ -23,7 +23,8 @@ jobs:
       # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt || true
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       # 4️⃣ Run AQI map generation script
       - name: Run AQI map generation script
