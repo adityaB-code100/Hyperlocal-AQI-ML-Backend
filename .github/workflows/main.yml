@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout ML Backend (Repo B)
-      - name: Checkout ML Backend (Repo B)
+      # 1️⃣ Checkout ML Backend
+      - name: Checkout ML Backend
         uses: actions/checkout@v4
 
       # 2️⃣ Setup Python
@@ -26,13 +26,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Run AQI map generation script
+      # 4️⃣ Run AQI generation with MongoDB secret
       - name: Run AQI map generation script
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           python runme.py
 
-      # 5️⃣ Push generated static maps to Frontend Repo (Repo A)
-      - name: Push static map to Frontend Repo (Repo A)
+      # 5️⃣ Push generated static maps to Frontend Repo
+      - name: Push static map to Frontend Repo
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
@@ -42,6 +44,7 @@ jobs:
           cp -r static/* Hyperlocal-AQI-API-Gateway/static/
 
           cd Hyperlocal-AQI-API-Gateway
+
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
