@@ -2,54 +2,68 @@ name: Daily AQI Map Generator
 
 on:
   schedule:
-    - cron: '30 21 * * *'   # 3:00 AM IST (UTC 21:30)
+    - cron: '30 21 * * *' # 3:00 AM IST daily (UTC 21:30)
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   generate-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout ML Backend
+      # 1. Checkout ML Backend
       - name: Checkout ML Backend
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Python
+      # 2. Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 3️⃣ Install dependencies
+      # 3. Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Run AQI generation with MongoDB secret
+      # 4. Generate AQI maps
       - name: Run AQI map generation script
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           python -m scripts.run_pipeline
 
-      # 5️⃣ Push generated static maps to Frontend Repo
-      - name: Push static map to Frontend Repo
+      # 5. Push generated maps to frontend repository
+      - name: Push static maps to Frontend Repo
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git clone https://$GH_TOKEN@github.com/adityaB-code100/Hyperlocal-AQI-API-Gateway.git
+          set -e
 
-          rm -f Hyperlocal-AQI-API-Gateway/static/map*.html
+          git clone \
+            "https://x-access-token:${GH_TOKEN}@github.com/adityaB-code100/Hyperlocal-AQI-API-Gateway.git" \
+            frontend-repo
 
-          cp generated/maps/map*.html \
-             Hyperlocal-AQI-API-Gateway/static/
+          rm -f frontend-repo/static/map*.html
 
-          cd Hyperlocal-AQI-API-Gateway
+          cp generated/maps/map*.html frontend-repo/static/
 
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          cd frontend-repo
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add static/
-          git commit -m "Auto-update AQI static map (daily)" || echo "No changes to commit"
-          git push
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update AQI static map (daily)"
+            git push \
+              "https://x-access-token:${GH_TOKEN}@github.com/adityaB-code100/Hyperlocal-AQI-API-Gateway.git" \
+              HEAD:main
+          else
+            echo "No changes to commit."
+          fi
+```
